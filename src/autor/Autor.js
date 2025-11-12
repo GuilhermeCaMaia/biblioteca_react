@@ -57,7 +57,7 @@ const createAutor = async (e) => {
 const editAutor = async (e) => {
     e.preventDefault();
     try {
-        let response = await fetch(`http://localhost:8080/autor/update/{autor.id}`, {
+        let response = await fetch(`http://localhost:8080/autor/update/${autor.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(autor),
@@ -82,7 +82,7 @@ const selecionarAutor = (autorSelecionado) => {
 // função para deletar autor
 const deleteAutor = async (id) => {
     try {
-        const response = await fetch(`http://localhost:8080/autor/delete/{id}`, {
+        const response = await fetch(`http://localhost:8080/autor/delete/${id}`, {
             method: "DELETE",
         });
         if (response.ok) {
@@ -193,7 +193,7 @@ const deleteAutor = async (id) => {
                                             <option key={n} value={n}>{n}</option>))}
                                     </select>
                                 </div>
-                                <button onClick={createAutor} className="btn btn-success mt-5 shadow-lg">
+                                <button onClick={editAutor} className="btn btn-success mt-5 shadow-lg">
                                     Editar
                                 </button>
                             </form>

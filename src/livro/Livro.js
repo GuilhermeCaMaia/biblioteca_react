@@ -77,6 +77,7 @@ function Livro(){
                     genre: "",
                     year: ""
                 });
+                listarLivros(); // atualiza lista
             }
         }catch (err) {
             console.error("Erro ao listar livros:", err);
@@ -84,13 +85,16 @@ function Livro(){
     }
 
     const selecionarLivro = (livroSelecionado) => {
-        setLivro(livroSelecionado);
+        setLivro({
+            ...livroSelecionado,
+            autor: livroSelecionado.autor || { id: "" }
+        });
     }
 
     // Função para deletar livro
     const deleteLivro = async (id) => {
         try {
-            const response = await fetch('http://localhost:8080/livro/delete/${id}', {
+            const response = await fetch(`http://localhost:8080/livro/delete/${id}`, {
                 method: "DELETE",
             });
             if (response.ok) {
@@ -166,7 +170,7 @@ function Livro(){
                 <div className="col-md-10">
                     <select
                         name="Autor"
-                        value={livro.autor.id}
+                        value={livro.autor?.id || ""}
                         onChange={handleAutorChange}
                         className="form-select">
                             <option value="">Selecione um autor</option>
@@ -203,7 +207,7 @@ function Livro(){
                             <td>{l.synopsis}</td>
                             <td>{l.genre}</td>
                             <td>{l.year}</td>
-                            <td>{l.autor ? l.autor.name : ""}</td>
+                            <td>{l.autor.name}</td>
                             <td>
                                 <button onClick={() => selecionarLivro(l)} className="btn btn-warning m-1"
                                     data-bs-toggle="modal" data-bs-target="#EditarModalLabel">
@@ -218,7 +222,84 @@ function Livro(){
                 </tbody>
             </table>
             {/* Modal de edição */}
-            
+            <div class="modal fade" id="EditarModalLabel" tabindex="-1" aria-label="EditarModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edição de Livro</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <label className="col-sm-2 col-form-label mt-5">Titulo</label>
+                                <div className="col-md-10">
+                                    <input
+                                        type="text"
+                                        value={livro.title}
+                                        onChange={eventKeyboard}
+                                        name="title"
+                                        className="form-control"
+                                    />
+                                </div>
+                                <label className="col-sm-2 col-form-label mt-5">Sinopse</label>
+                                <div className="col-md-10">
+                                    <textarea
+                                        type="text"
+                                        value={livro.synopsis}
+                                        onChange={eventKeyboard}
+                                        name="synopsis"
+                                        className="form-control"
+                                        rows="3"
+                                    />
+                                </div>
+                                <label className="col-sm-2 col-form-label mt-5">Gênero</label>
+                                <div className="col-md-10">
+                                    <input
+                                        type="text"
+                                        value={livro.genre}
+                                        onChange={eventKeyboard}
+                                        name="genre"
+                                        className="form-control"
+                                    />
+                                </div>
+                                <label className="col-sm-2 col-form-label mt-5">Ano de lançamento</label>
+                                <div className="col-md-10">
+                                    <input
+                                        type="integer"
+                                        value={livro.year}
+                                        onChange={eventKeyboard}
+                                        name="year"
+                                        className="form-control"
+                                    />
+                                </div>
+                                <label className="col-sm-2 col-form-label mt-5">Autor</label>
+                                <div className="col-md-10">
+                                    <select
+                                        name="Autor"
+                                        value={livro.autor?.id || ""}
+                                        onChange={handleAutorChange}
+                                        className="form-select">
+                                        <option value="">Selecione um autor</option>
+                                        {autors.map((a) => (
+                                            <option key={a.id} value={a.id}>
+                                                {a.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="modal-footer">
+                                    <button className="btn btn-danger mt-5 shadow-lg alined-left" aria-label="Close">
+                                        Cancelar
+                                    </button>
+                                    <button onClick={editLivro} className="btn btn-success mt-5 shadow-lg alined-right">
+                                        Editar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
